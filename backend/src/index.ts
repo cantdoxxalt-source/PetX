@@ -25,6 +25,9 @@ const app = express();
 const PORT = parseInt(process.env.PORT ?? "4000", 10);
 const FRONTEND_DIST = path.join(__dirname, "..", "..", "dist");
 
+// Trust Vercel / reverse-proxy forwarded IPs so rate limiting uses real client IP
+app.set("trust proxy", 1);
+
 initStorage();
 
 // ── Security headers ──────────────────────────────────────────────────────────
