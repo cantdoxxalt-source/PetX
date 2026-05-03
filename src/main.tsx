@@ -12,7 +12,7 @@ import "./index.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 const SOLANA_RPC =
-  import.meta.env.VITE_SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+  import.meta.env.VITE_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
 
 function Root() {
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);

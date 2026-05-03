@@ -12,7 +12,7 @@ import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-ad
 import type { WalletContextState } from "@solana/wallet-adapter-react";
 
 const SOLANA_RPC =
-  (import.meta as any).env?.VITE_SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+  (import.meta as any).env?.VITE_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
 
 /**
  * Creates a UMI instance with mplCore plugin and wallet adapter identity.
