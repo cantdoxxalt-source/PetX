@@ -164,9 +164,12 @@ async function main() {
   process.on("SIGINT",  () => shutdown("SIGINT"));
 }
 
-main().catch((err) => {
-  console.error("Fatal startup error:", err);
-  process.exit(1);
-});
+// Only start the HTTP server when run directly (not when required by api/index.js)
+if (require.main === module) {
+  main().catch((err) => {
+    console.error("Fatal startup error:", err);
+    process.exit(1);
+  });
+}
 
 export default app;
