@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm install && npm run build && cd backend && npm install && npm run db:generate && npm run build"
+buildCommand = "rm -f package-lock.json && npm install && npm run build && cd backend && rm -f package-lock.json && npm install && npm run db:generate && npm run build"
 
 [deploy]
 startCommand = "cd backend && npm run db:migrate && node ../backend/dist/index.js"
