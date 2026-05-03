@@ -1,0 +1,70 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public profile for a user",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string", "description": "The user's display name" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["displayName", "createdAt"]
+    },
+    "Pet": {
+      "title": "Pet",
+      "description": "Codex companion pet package",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Pet unique ID from manifest" },
+        "ownerId": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "displayName": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "spritesheetUrl": { "type": "string" },
+        "downloadUrl": { "type": "string" },
+        "viewCount": { "type": "integer" },
+        "downloadCount": { "type": "integer" },
+        "likeCount": { "type": "integer" },
+        "uploadedAt": { "type": "string", "format": "date-time" },
+        "validationReport": {
+          "type": "object",
+          "properties": {
+            "manifest": { "type": "string" },
+            "atlas": { "type": "string" },
+            "cell": { "type": "string" },
+            "states": { "type": "integer" },
+            "petJsonSize": { "type": "integer" },
+            "spritesheetSize": { "type": "integer" }
+          }
+        }
+      },
+      "required": ["id", "ownerId", "ownerName", "displayName", "spritesheetUrl", "downloadUrl", "uploadedAt"]
+    },
+    "Like": {
+      "title": "Like",
+      "description": "Relationship between a user and a pet they like",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "petId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Users collection"
+    },
+    "/pets/{petId}": {
+      "schema": "Pet",
+      "description": "Pets collection"
+    },
+    "/likes/{likeId}": {
+      "schema": "Like",
+      "description": "Likes (docId is userId_petId)"
+    }
+  }
+}

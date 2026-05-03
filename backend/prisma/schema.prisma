@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  walletAddress String   @id @map("wallet_address")
+  displayName   String?  @map("display_name")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  ownedPets    Pet[]         @relation("PetOwner")
+  likes        Like[]
+  buyTxns      Transaction[] @relation("TxBuyer")
+  sellTxns     Transaction[] @relation("TxSeller")
+
+  @@map("users")
+}
+
+model Pet {
+  id            String    @id @default(uuid())
+  ownerWallet   String    @map("owner_wallet")
+  creatorWallet String    @map("creator_wallet")
+  displayName   String    @map("display_name")
+  description   String?
+  tags          String[]
+  frames        Int       @default(6)
+  fps           Int       @default(12)
+  scale         Float     @default(1.0)
+  /// File storage key for the spritesheet (served publicly for preview)
+  spritesheetKey String   @map("spritesheet_key")
+  /// File storage key for pet.json (gated — owner only)
+  jsonKey       String    @map("json_key")
+  /// Metaplex Core NFT mint address (null = not yet minted on-chain)
+  mintAddress   String?   @unique @map("mint_address")
+  /// Listing price in lamports; null means not for sale
+  priceLamports BigInt?   @map("price_lamports")
+  isListed      Boolean   @default(false) @map("is_listed")
+  likeCount     Int       @default(0) @map("like_count")
+  viewCount     Int       @default(0) @map("view_count")
+  downloadCount Int       @default(0) @map("download_count")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  owner        User          @relation("PetOwner", fields: [ownerWallet], references: [walletAddress])
+  likes        Like[]
+  transactions Transaction[]
+  events       PetEvent[]
+
+  @@map("pets")
+}
+
+model Like {
+  walletAddress String @map("wallet_address")
+  petId         String @map("pet_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [walletAddress], references: [walletAddress])
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@id([walletAddress, petId])
+  @@map("likes")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  petId         String   @map("pet_id")
+  sellerWallet  String   @map("seller_wallet")
+  buyerWallet   String   @map("buyer_wallet")
+  priceLamports BigInt   @map("price_lamports")
+  txSignature   String   @unique @map("tx_signature")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  pet    Pet  @relation(fields: [petId], references: [id])
+  buyer  User @relation("TxBuyer", fields: [buyerWallet], references: [walletAddress])
+  seller User @relation("TxSeller", fields: [sellerWallet], references: [walletAddress])
+
+  @@map("transactions")
+}
+
+/// Append-only log of notable pet lifecycle events for the history card.
+model PetEvent {
+  id            String   @id @default(uuid())
+  petId         String   @map("pet_id")
+  /// CREATED | MINTED | LISTED | UNLISTED | SOLD
+  type          String
+  /// Primary actor (uploader, minter, seller, buyer)
+  walletAddress String   @map("wallet_address")
+  /// Secondary actor — seller wallet for SOLD events
+  counterparty  String?
+  priceLamports BigInt?  @map("price_lamports")
+  /// On-chain tx signature — present for SOLD events
+  txSignature   String?  @map("tx_signature")
+  /// NFT mint address — present for MINTED events
+  mintAddress   String?  @map("mint_address")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  pet Pet @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@map("pet_events")
+}
+
+/// Ephemeral nonce per wallet for sign-in; replaced on each request
+model Nonce {
+  walletAddress String   @id @map("wallet_address")
+  value         String
+  expiresAt     DateTime @map("expires_at")
+
+  @@map("nonces")
+}

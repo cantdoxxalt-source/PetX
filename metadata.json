@@ -1,0 +1,6 @@
+{
+  "name": "Codex Pet Share",
+  "description": "A community-driven catalog for sharing, discovering, and installing pixel-art companion pets for the Codex CLI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
