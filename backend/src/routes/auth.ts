@@ -15,12 +15,14 @@ import crypto from "crypto";
 
 const router = Router();
 
+const IS_PROD = process.env.NODE_ENV === "production";
 const COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: "strict" as const,
-  secure: process.env.NODE_ENV === "production",
+  sameSite: (IS_PROD ? "none" : "strict") as "none" | "strict",
+  secure: IS_PROD,
   maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
   path: "/",
+  ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {}),
 };
 
 // ── POST /api/auth/nonce ──────────────────────────────────────────────────────
