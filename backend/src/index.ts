@@ -132,6 +132,12 @@ app.use("/api/nft",    strictLimiter, nftRouter);
 app.use("/api/pets",   petsRouter);
 app.use("/api/users",  usersRouter);
 
+// ── Global JSON error handler (catches next(err) from CORS, etc.) ────────────
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("[express error]", err?.message ?? err);
+  res.status(err?.status ?? 500).json({ error: err?.message ?? "Internal server error" });
+});
+
 // ── Frontend static (production) ─────────────────────────────────────────────
 if (fs.existsSync(FRONTEND_DIST)) {
   app.use(express.static(FRONTEND_DIST));
