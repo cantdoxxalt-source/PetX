@@ -34,6 +34,8 @@ export function WalletButton({ user, onLogin, onLogout, className }: WalletButto
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
+  // Ref guard prevents concurrent sign-in attempts when publicKey fires multiple times
+  const signingInRef = useRef(false);
 
   // Close picker when clicking outside
   useEffect(() => {
@@ -49,7 +51,7 @@ export function WalletButton({ user, onLogin, onLogout, className }: WalletButto
 
   // Sign in once publicKey appears (wallet just connected)
   useEffect(() => {
-    if (!publicKey || user || signingIn) return;
+    if (!publicKey || user || signingInRef.current) return;
     handleSignIn();
   }, [publicKey]);
 
@@ -78,6 +80,8 @@ export function WalletButton({ user, onLogin, onLogout, className }: WalletButto
   // ── Sign in ──────────────────────────────────────────────────────────────────
   async function handleSignIn() {
     if (!publicKey || !signMessage) return;
+    if (signingInRef.current) return;
+    signingInRef.current = true;
     setSigningIn(true);
     setError(null);
     try {
@@ -96,6 +100,7 @@ export function WalletButton({ user, onLogin, onLogout, className }: WalletButto
     } catch (err: any) {
       setError(err.message ?? "Sign-in failed");
     } finally {
+      signingInRef.current = false;
       setSigningIn(false);
     }
   }
