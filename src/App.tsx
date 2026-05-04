@@ -260,8 +260,8 @@ function NavBar({
       <div className="w-[min(1080px,calc(100vw-64px))] mx-auto h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <button onClick={() => onNavigate("#/")} className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded bg-ink flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-              <Icon name="package" size={18} />
+            <div className="w-8 h-8 rounded overflow-hidden group-hover:scale-105 transition-transform">
+              <img src="/logo.jpg" alt="PetX" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold tracking-tight text-xl">PetX</span>
           </button>
