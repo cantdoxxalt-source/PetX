@@ -272,6 +272,17 @@ function NavBar({
         </div>
 
         <div className="flex items-center gap-4">
+          <a
+            href="https://x.com/1sttxn"
+            target="_blank"
+            rel="noreferrer"
+            className="text-muted hover:text-foreground transition-colors"
+            title="Follow on X"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
           {user ? (
             <div className="flex items-center gap-6">
               <button onClick={() => onNavigate("#/favorites")} className={cn("text-sm font-medium transition-colors hidden md:block", currentRoute === "favorites" ? "text-foreground" : "text-muted hover:text-foreground")}>Favorites</button>
@@ -968,7 +979,11 @@ function UploadPage({
   }
 
   async function handleMintAndPublish() {
-    if (!jsonFile || !sheetFile || !wallet.connected || !wallet.publicKey) return;
+    if (!jsonFile || !sheetFile) return;
+    if (!wallet.connected || !wallet.publicKey) {
+      setError("Phantom is not connected. Click 'Connect Wallet' in the top bar and sign in again.");
+      return;
+    }
     setBusy(true);
     setError(null);
     setDoneSteps([]);
@@ -1034,7 +1049,7 @@ function UploadPage({
     }
   }
 
-  const canSubmit = !!jsonFile && !!sheetFile && wallet.connected && !busy;
+  const canSubmit = !!jsonFile && !!sheetFile && !busy;
   const btnLabel = willList
     ? `Mint & List for ${listPrice} SOL`
     : "Mint & Publish";
