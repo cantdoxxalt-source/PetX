@@ -308,7 +308,7 @@ function NavBar({
         <div className="flex items-center gap-4">
           <CaChip ca="4E7PVfDvuL42XXxvto4K7RAfAmN23zg8s7ny8z55pump" />
           <a
-            href="https://x.com/1sttxn"
+            href="https://x.com/PetXdotspace"
             target="_blank"
             rel="noreferrer"
             className="text-muted hover:text-foreground transition-colors"
