@@ -51,6 +51,10 @@
     from { opacity: 0; transform: translateY(8px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
+  @keyframes petGlow {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
   @keyframes sprite-play {
     from { background-position: 0 var(--sprite-y); }
     to   { background-position: var(--sprite-end-x) var(--sprite-y); }

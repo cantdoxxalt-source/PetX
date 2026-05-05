@@ -14,6 +14,7 @@ import { TagPills, PetCard } from "./components/PetCard";
 import { Modal } from "./components/Modals";
 import { WalletButton } from "./components/WalletButton";
 import { BuyModal } from "./components/BuyModal";
+import { CursorPet } from "./components/CursorPet";
 import { cn, formatDate, formatCompactNumber } from "./lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import { downloadPetFiles } from "./services/api";
@@ -599,6 +600,7 @@ function DetailPage({
   const [mintSuccess, setMintSuccess] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
   const [localPet, setLocalPet] = useState<Pet | null>(null);
+  const [isWalking, setIsWalking] = useState(false);
 
   useEffect(() => { setLocalPet(pet); }, [pet]);
 
@@ -712,6 +714,23 @@ function DetailPage({
           <div className="aspect-square lg:aspect-auto bg-white border border-border rounded-2xl p-8 flex items-center justify-center min-h-[400px]">
             <SpriteFrame pet={localPet} row={activeState.row} frames={activeState.frames} size="large" />
           </div>
+
+          {/* Walk button */}
+          <button
+            onClick={() => setIsWalking(w => !w)}
+            className={cn(
+              "btn btnLg w-full gap-2 transition-all",
+              isWalking
+                ? "bg-accent-soft border-accent/30 text-accent-deep"
+                : "border-border-strong"
+            )}
+          >
+            {isWalking ? (
+              <><span>✓</span> Roaming free</>
+            ) : (
+              <><span>✦</span> Let it roam</>
+            )}
+          </button>
 
           {/* Action buttons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -902,6 +921,9 @@ function DetailPage({
           <HistoryCard petId={localPet.id} />
         </div>
       </section>
+
+      {/* Cursor pet walker */}
+      {isWalking && <CursorPet pet={localPet} />}
 
       {/* List for sale modal */}
       <Modal isOpen={showListModal} onClose={() => setShowListModal(false)} title="List for Sale">
